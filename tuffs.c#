@@ -1,0 +1,16 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Hello, World!");
+
+        int add(int a, int b)
+        {
+            return a + b;
+        }
+
+        Console.WriteLine("2 + 3 = " + add(2, 3));
+    }
+}
