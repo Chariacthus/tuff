@@ -1,0 +1,128 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace RandomProject
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = Encoding.UTF8;
+            Console.WriteLine("Starting random execution...");
+
+            var manager = new TaskManager();
+            manager.Run();
+
+            Console.WriteLine("Execution complete.");
+        }
+    }
+
+    public class TaskManager
+    {
+        private List<IRandomTask> _tasks;
+        public TaskManager()
+        {
+            _tasks = new List<IRandomTask>
+            {
+                new FileGeneratorTask(),
+                new NumberCrunchTask(),
+                new RandomWordTask(),
+                new InfiniteLoopTask(),
+                new DataPrinterTask()
+            };
+        }
+
+        public void Run()
+        {
+            foreach (var task in _tasks)
+            {
+                Console.WriteLine($"Running: {task.GetType().Name}");
+                task.Execute();
+            }
+        }
+    }
+
+    public interface IRandomTask
+    {
+        void Execute();
+    }
+
+    public class FileGeneratorTask : IRandomTask
+    {
+        public void Execute()
+        {
+            string path = "random_output.txt";
+            var random = new Random();
+            var lines = new List<string>();
+            for (int i = 0; i < 10; i++)
+            {
+                lines.Add($"Line {i}: {random.Next(1000, 9999)}");
+            }
+            File.WriteAllLines(path, lines);
+            Console.WriteLine($"File generated at {Path.GetFullPath(path)}");
+        }
+    }
+
+    public class NumberCrunchTask : IRandomTask
+    {
+        public void Execute()
+        {
+            var random = new Random();
+            var numbers = Enumerable.Range(1, 20).Select(_ => random.Next(1, 500)).ToList();
+            Console.WriteLine("Numbers: " + string.Join(", ", numbers));
+            Console.WriteLine("Sum: " + numbers.Sum());
+            Console.WriteLine("Average: " + numbers.Average());
+        }
+    }
+
+    public class RandomWordTask : IRandomTask
+    {
+        private static string[] words = new[] { "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "theta" };
+        public void Execute()
+        {
+            var random = new Random();
+            for (int i = 0; i < 5; i++)
+            {
+                Console.WriteLine($"Word: {words[random.Next(words.Length)]}");
+            }
+        }
+    }
+
+    public class InfiniteLoopTask : IRandomTask
+    {
+        public void Execute()
+        {
+            Console.WriteLine("Starting fake infinite loop (3 iterations only)...");
+            for (int i = 0; i < 3; i++)
+            {
+                Console.WriteLine($"Loop iteration {i}");
+                Thread.Sleep(200);
+            }
+            Console.WriteLine("Breaking loop.");
+        }
+    }
+
+    public class DataPrinterTask : IRandomTask
+    {
+        public void Execute()
+        {
+            var dictionary = new Dictionary<string, int>
+            {
+                {"apple", 5},
+                {"banana", 2},
+                {"carrot", 7},
+                {"date", 4}
+            };
+
+            foreach (var kv in dictionary)
+            {
+                Console.WriteLine($"{kv.Key} => {kv.Value}");
+            }
+        }
+    }
+}
